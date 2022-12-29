@@ -1,0 +1,1 @@
+Formatting '/home/redes/Github/REDES1-PROJECT/Project/Class_VM/Without Server/redes1_project_noserver/project-files/qemu/c42cd33c-d4b8-4dd1-a5eb-6110b6b4a0da/hdb_disk.qcow2', fmt=qcow2 cluster_size=65536 extended_l2=off compression_type=zlib size=1048576 backing_file=/home/redes/GNS3/images/QEMU/IOSv_startup_config.img backing_fmt=raw lazy_refcounts=off refcount_bits=16
