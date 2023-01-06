@@ -1,5 +1,9 @@
-ToDo: switchport security, server
+ERRORS:
+	*Server: serial0: Unable to bind the server socket: No such file or directory. (FIXED)
 
+
+
+ToDo: switchport security, server
 
 copy running-config startup-config
 
@@ -8,6 +12,7 @@ SERVER:
 	ip link show
 	ip addr show
 	sudo ifdown/ifup ens33
+	sudo ifconfig ens33 down
 
 R1:
 	en
@@ -510,8 +515,3 @@ A3:
 	vtp password CISCO
 	vtp mode client
 	exit
-
-
-
-
-
