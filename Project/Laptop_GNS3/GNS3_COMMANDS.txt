@@ -1,0 +1,517 @@
+ToDo: switchport security, server
+
+
+copy running-config startup-config
+
+SERVER:
+	/etc/network/interfaces
+	ip link show
+	ip addr show
+	sudo ifdown/ifup ens33
+
+R1:
+	en
+	conf t
+
+	int gi0/0.10
+	encapsulation dot1q 10
+	no sh
+	ip addr 10.200.10.254 255.255.255.0
+	exit
+	int gi0/0.20
+	encapsulation dot1q 10
+	no sh
+	ip addr 10.200.20.254 255.255.255.0
+	exit
+	int gi0/0.30
+	encapsulation dot1q 10
+	no sh
+	ip addr 10.200.30.254 255.255.255.0
+	exit
+
+	--DHCP
+	int gi0/1
+	ip add dhcp
+	no sh
+	exit
+
+	ip domain-lookup
+	ip name-server 8.8.8.8
+	exit
+
+
+C1:
+	en
+	conf t
+	vlan 10
+	name Diagnosis
+	exit
+
+	vlan 20
+	name Office
+	exit
+
+	vlan 30
+	name Guest
+	exit
+
+	vlan 99
+	name Management
+	exit
+
+	int VLAN99
+	ip addr 10.200.99.11 255.255.255.0
+	exit
+
+	int range gi0/1-2
+	switchport
+	no sh
+	channel-group 1 mode active
+	exit
+
+	int range gi1/1-2
+	switchport
+	no sh
+	channel-group 2 mode active
+	exit
+
+	int range gi2/0-2
+	switchport
+	no sh
+	channel-group 3 mode active
+	exit
+
+	--Po1
+	int range gi0/1-2
+	sh
+	switchport trunk encapsulation dot1q
+	switchport mode trunk
+	switchport trunk native vlan 99
+	no sh
+	exit
+
+	--Po2
+	int range gi1/1-2
+	sh
+	switchport trunk encapsulation dot1q
+	switchport mode trunk
+	switchport trunk native vlan 99
+	no sh
+	exit
+
+	--Po3
+	int range gi2/0-2
+	sh
+	switchport trunk encapsulation dot1q
+	switchport mode trunk
+	switchport trunk native vlan 99
+	no sh
+	exit	
+
+
+	int gi1/3
+	sh
+	switchport trunk encapsulation dot1q
+	switchport mode trunk
+	switchport trunk native vlan 99
+	no sh
+	exit
+
+
+	--VTP
+	vtp domain REDES
+	vtp password CISCO
+	vtp mode client
+	exit
+
+	--SPT
+	spanning-tree vlan 10 priority 4096
+	spanning-tree vlan 20 priority 8192
+	spanning-tree vlan 30 priority 4096
+
+
+C2:
+	en
+	conf t
+	vlan 10
+	name Diagnosis
+	exit
+
+	vlan 20
+	name Office
+	exit
+
+	vlan 30
+	name Guest
+	exit
+
+	vlan 99
+	name Management
+	exit
+
+	int VLAN99
+	ip addr 10.200.99.12 255.255.255.0
+	no sh
+	exit
+
+	int range gi2/0-2
+	switchport
+	no sh
+	channel-group 3 mode active
+	exit
+
+	int range gi1/0-2
+	switchport
+	no sh
+	channel-group 4 mode active
+	exit
+
+	int range gi3/2-3
+	switchport
+	no sh
+	channel-group 5 mode active
+	exit
+
+	int range gi0/1-2
+	switchport
+	no sh
+	channel-group 6 mode active
+	exit
+
+	--Po3
+	int range gi2/0-2
+	sh
+	switchport trunk encapsulation dot1q
+	switchport mode trunk
+	switchport trunk native vlan 99
+	no sh
+	exit
+
+	--Po4
+	int range gi1/0-2
+	sh
+	switchport trunk encapsulation dot1q
+	switchport mode trunk
+	switchport trunk native vlan 99
+	no sh
+	exit
+
+	--Po5
+	int range gi3/2-3
+	sh
+	switchport trunk encapsulation dot1q
+	switchport mode trunk
+	switchport trunk native vlan 99
+	no sh
+	exit	
+
+	--Po6 
+	int range gi0/1-2
+	sh
+	switchport trunk encapsulation dot1q
+	switchport mode trunk
+	switchport trunk native vlan 99
+	no sh
+	exit
+
+	--VTP
+	vtp domain REDES
+	vtp password CISCO
+	vtp mode server
+	exit
+
+	vtp pruning
+	exit
+
+	--STP
+	spanning-tree vlan 10 priority 8192
+	spanning-tree vlan 20 priority 4096
+	spanning-tree vlan 30 priority 8192
+
+
+
+
+C3:
+	en
+	conf t
+	vlan 10
+	name Diagnosis
+	exit
+
+	vlan 20
+	name Office
+	exit
+
+	vlan 30
+	name Guest
+	exit
+
+	vlan 99
+	name Management
+	exit
+
+	int VLAN99
+	ip addr 110.200.99.13 255.255.255.0
+	no sh
+	exit
+
+	int range gi0/1-2
+	switchport
+	no sh
+	channel-group 1 mode active
+	exit
+
+	int range gi1/0-2
+	switchport
+	no sh
+	channel-group 4 mode active
+	exit
+
+	int range gi3/0-1
+	switchport
+	no sh
+	channel-group 2 mode active
+	exit
+
+	int range gi2/0-1
+	switchport
+	no sh
+	channel-group 7 mode active
+	exit
+
+	int gi0/3
+	sh
+	switchport trunk encapsulation dot1q
+	switchport mode trunk
+	switchport trunk native vlan 99
+	no sh
+	exit
+
+	--Po1
+	int range gi0/1-2
+	sh
+	switchport trunk encapsulation dot1q
+	switchport mode trunk
+	switchport trunk native vlan 99
+	no sh
+	exit
+
+	--Po4
+	int range gi1/0-2
+	sh
+	switchport trunk encapsulation dot1q
+	switchport mode trunk
+	switchport trunk native vlan 99
+	no sh
+	exit	
+
+	--VTP
+	vtp domain REDES
+	vtp password CISCO
+	vtp mode client
+	exit
+
+	--STP
+	spanning-tree vlan 10 priority 8192
+	spanning-tree vlan 20 priority 24576
+	spanning-tree vlan 30 priority 4096
+
+
+A1:
+	en
+	conf t
+	int range gi1/1-2
+	switchport
+	no sh
+	channel-group 2 mode active
+	exit
+
+	int range gi0/1-2
+	switchport
+	no sh
+	channel-group 6 mode active
+	exit
+
+	vlan 10
+	name Diagnosis
+	exit
+
+	vlan 20
+	name Office
+	exit
+
+	vlan 30
+	name Guest
+	exit
+
+	vlan 99
+	name Management
+	exit
+	int VLAN99
+	ip addr 10.200.99.1 255.255.255.0
+	no sh
+	exit
+
+	vlan 20
+	name Office
+	exit
+
+	int gi0/0
+	sh
+	switchport mode access
+	switchport access vlan 20
+	no sh
+	end
+
+	--Po2
+	int range gi1/1-2
+	sh
+	switchport trunk encapsulation dot1q
+	switchport mode trunk
+	switchport trunk native vlan 99
+	no sh
+	exit
+
+	--Po4
+	int range gi0/1-2
+	sh
+	switchport trunk encapsulation dot1q
+	switchport mode trunk
+	switchport trunk native vlan 99
+	no sh
+	exit	
+
+
+	--VTP
+	vtp domain REDES
+	vtp password CISCO
+	vtp mode client
+	exit
+
+A2:
+	en
+	conf t
+	vlan 10
+	name Diagnosis
+	exit
+
+	vlan 20
+	name Office
+	exit
+
+	vlan 30
+	name Guest
+	exit
+
+	vlan 99
+	name Management
+	exit
+
+	int gi1/3
+	switchport trunk encapsulation dot1q
+	switchport mode trunk
+	switchport trunk native vlan 99
+	no sh
+	exit
+
+	int VLAN99
+	ip addr 10.200.99.2 255.255.255.0
+	no sh
+	exit
+
+	int gi2/0
+	switchport access vlan 10
+	no sh
+	exit
+
+	int gi2/1
+	switchport access vlan 20
+	no sh
+	exit
+
+	int gi0/3
+	sh
+	switchport trunk encapsulation dot1q
+	switchport mode trunk
+	switchport trunk native vlan 99
+	no sh
+	exit
+
+	int gi1/3
+	sh
+	switchport trunk encapsulation dot1q
+	switchport mode trunk
+	switchport trunk native vlan 99
+	no sh
+	exit
+	
+	--VTP
+	vtp domain REDES
+	vtp password CISCO
+	vtp mode client
+	exit
+
+A3:
+	en
+	conf t
+	int range gi3/0-1
+	switchport
+	no sh
+	channel-group 2 mode active
+	exit
+
+	int range gi3/2-3
+	switchport
+	no sh
+	channel-group 5 mode active
+	exit
+
+	vlan 10
+	name Diagnosis
+	exit
+
+	vlan 20
+	name Office
+	exit
+
+	vlan 30
+	name Guest
+	exit
+
+	vlan 99
+	name Management
+	exit
+
+	int VLAN99
+	ip addr 10.200.99.3 255.255.255.0
+	no sh
+	exit
+
+	--Po2
+	int range gi3/0-1
+	sh
+	switchport trunk encapsulation dot1q
+	switchport mode trunk
+	switchport trunk native vlan 99
+	no sh
+	exit	
+
+	--Po5
+	int range gi3/2-3
+	sh
+	switchport trunk encapsulation dot1q
+	switchport mode trunk
+	switchport trunk native vlan 99
+	no sh
+	exit	
+
+	--VTP
+	vtp domain REDES
+	vtp password CISCO
+	vtp mode client
+	exit
+
+
+
+
+
