@@ -34,8 +34,14 @@ R1:
 	--DHCP
 	int gi0/1
 	ip add dhcp
+	duplex auto
+	speed auto
+	media-type rj45
 	no sh
+	ip nat outside
 	exit
+	ip nat inside source list 1 interface gi0/1
+	access-list 1 permit any
 
 	ip domain-lookup
 	ip name-server 8.8.8.8

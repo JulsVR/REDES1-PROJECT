@@ -10,7 +10,7 @@ auto eth0
 iface eth0 inet static
 	address 10.200.10.1
 	netmask 255.255.255.0
-	gateway 10.200.20.254
+	gateway 10.200.10.254
 #	up echo nameserver 192.168.0.1 > /etc/resolv.conf
 
 # DHCP config for eth0
