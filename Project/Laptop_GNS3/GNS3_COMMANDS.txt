@@ -12,7 +12,8 @@ SERVER:
 	ip link show
 	ip addr show
 	sudo ifdown/ifup ens33
-	sudo ifconfig ens33 down
+	sudo ifconfig ens33 down 
+	ip a
 
 R1:
 	en
@@ -84,6 +85,14 @@ C1:
 	switchport
 	no sh
 	channel-group 3 mode active
+	exit
+
+	int gi0/0
+	sh
+	switchport trunk encapsulation dot1q
+	switchport mode trunk
+	switchport trunk native vlan 99
+	no sh
 	exit
 
 	--Po1
@@ -515,3 +524,100 @@ A3:
 	vtp password CISCO
 	vtp mode client
 	exit
+
+Arista Switch:
+	en
+	conf t
+	vlan 10
+	name Diagnosis
+	exit
+
+	vlan 20
+	name Office
+	exit
+
+	vlan 30
+	name Guest
+	exit
+
+	vlan 99
+	name Management
+	exit
+
+	int VLAN99
+	ip addr 10.200.99.12 255.255.255.0
+	no shutdown
+	exit
+
+	--Po3
+	int range et1-3
+	shutdown
+	switchport
+	switchport trunk group 3
+	switchport trunk native vlan 99
+	no shutdown
+	exit
+
+	--Po4
+	int range et4-6
+	shutdown
+	switchport
+	switchport trunk group 4
+	switchport trunk native vlan 99
+	no shutdown
+	exit
+
+	--Po5
+	int range et10-11
+	shutdown
+	switchport
+	switchport trunk group 5
+	switchport trunk native vlan 99
+	no shutdown
+	exit	
+
+	--Po6 
+	int range et8-9
+	shutdown
+	switchport
+	switchport trunk group 6
+	switchport trunk native vlan 99
+	no shutdown
+	exit
+
+	--VTP
+	vtp domain REDES
+	vtp password CISCO
+	vtp mode server
+	exit
+
+	vtp pruning
+	exit
+
+	--STP
+	spanning-tree vlan 10 priority 8192
+	spanning-tree vlan 20 priority 4096
+	spanning-tree vlan 30 priority 8192
+
+
+--CONFIGURE C1 AS A ROUTER:
+C1:
+	en
+	conf t
+	int VLAN10
+	ip addr 10.200.10.254 255.255.255.0
+	no sh
+	exit
+
+	int VLAN20
+	ip addr 10.200.20.254 255.255.255.0
+	no sh
+	exit
+
+	int VLAN30
+	ip addr 10.200.30.254 255.255.255.0
+	no sh
+	exit
+
+	ip routing
+	end
