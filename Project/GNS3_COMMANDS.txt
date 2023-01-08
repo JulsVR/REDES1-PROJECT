@@ -1,11 +1,6 @@
-ERRORS:
-	*Server: serial0: Unable to bind the server socket: No such file or directory. (FIXED)
-
-
-
-ToDo: switchport security, server
-
 copy running-config startup-config
+
+
 
 SERVER:
 	/etc/network/interfaces
@@ -18,17 +13,18 @@ SERVER:
 R1:
 	en
 	conf t
-
 	int gi0/0.10
 	encapsulation dot1q 10
 	no sh
 	ip addr 10.200.10.254 255.255.255.0
 	exit
+
 	int gi0/0.20
 	encapsulation dot1q 10
 	no sh
 	ip addr 10.200.20.254 255.255.255.0
 	exit
+	
 	int gi0/0.30
 	encapsulation dot1q 10
 	no sh
